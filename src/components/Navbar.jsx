@@ -5,12 +5,15 @@ import Github from "../assets/github.svg?react"
 import { useState } from "react"
 import Board from './Board'
 import AddBoard from './AddBoard'
+import { db } from '../db'
+import { useLiveQuery } from "dexie-react-hooks"
 
 export default function Navbar() {
 	const [open, setOpen] = useState(false)
+	const boards = useLiveQuery(async () => await db.boards.toArray())
 
 	return (
-		<div className={`${open ? "w-76" : "w-11"} h-full bg-black border-2 border-white`}>
+		<div className={`${open ? "min-w-62" : "min-w-11"} h-full bg-black border-2 border-white`}>
 			<div className="w-full h-11 p-1.5 flex flex-row outline-2 outline-white gap-2 items-center">
 				<Menu className="fill-white cursor-pointer w-7 h-7" onClick={() => setOpen(!open)}/>
 				{open ? (<>
@@ -22,7 +25,9 @@ export default function Navbar() {
 				</>) : ""}
 			</div>
 			{open ? (<>
-				<Board/>
+				{boards.map((board) => (
+					<Board key={board.id} id={board.id} name={board.name}/>
+				))}
 				<AddBoard/>
 			</>) : ""}
 		</div>

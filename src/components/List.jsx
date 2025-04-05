@@ -38,6 +38,9 @@ export default function List() {
 			<div className='w-0 h-0 border-10 border-white border-b-transparent border-r-transparent absolute top-0 left-0 flex items-center justify-center cursor-pointer'>
 				<div className='w-0 h-0 border-8 border-black border-b-transparent border-r-transparent relative -left-0.5 -top-0.5'></div>
 			</div>
+			<div className='w-0 h-0 border-10 border-white border-t-transparent border-r-transparent absolute bottom-0 left-0 flex items-center justify-center cursor-pointer'>
+				<div className='w-0 h-0 border-8 border-black border-t-transparent border-r-transparent relative -left-0.5 -bottom-0.5'></div>
+			</div>
 			<textarea className="bg-transparent m-0 boarder-none text-white resize-none pl-1 w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"
 				onInput={onTextareaInput} rows={1}
 			></textarea>

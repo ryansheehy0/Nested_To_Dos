@@ -3,7 +3,7 @@ import List from "./List"
 
 export default function BoardView() {
 	return (
-		<div className="w-full h-screen bg-black px-4.5 py-4 flex flex-row gap-5">
+		<div className="w-full h-screen bg-black px-6.25 py-5.75 flex flex-row gap-5.75">
 			<List/>
 			<AddList/>
 		</div>
