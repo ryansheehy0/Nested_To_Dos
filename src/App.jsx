@@ -3,6 +3,23 @@ import BoardView from './components/BoardView'
 import { db } from './db'
 import { useEffect, useState } from 'react'
 
+/* To Do
+- Add lists to lists
+- Save icon
+- Open icon
+- Folding
+- Moving
+- PWA
+
+- Fix icons
+  - Icon sizes the same for lists and boards
+  - Thinner icon lines
+- Fix width and sizing of everything
+
+- Review code and clean everything
+- Fix readme
+*/
+
 function App() {
   const [loading, setLoading] = useState(true)
 
@@ -13,7 +30,7 @@ function App() {
       if (board.length === 0) {
         const newBoardID = await db.boards.add({
           name: "To Dos",
-          lists: []
+          listIDs: []
         })
         await db.other.add({
           curBoardID: newBoardID
@@ -21,7 +38,6 @@ function App() {
       }
       setLoading(false)
     }
-
     loadApp()
   })
 

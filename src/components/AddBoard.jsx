@@ -4,7 +4,7 @@ export default function AddBoard() {
 	async function addBoard() {
 		await db.boards.add({
 			name: "",
-			lists: []
+			listIDs: []
 		})
 	}
 
