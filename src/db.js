@@ -5,7 +5,7 @@ export const db = new Dexie('nested-to-dos')
 db.version(1).stores({
 	other: "++id, curBoardID",
 	boards: "++id, name, listIDs",
-	lists: "++id, name, listIDs, parentID, parentType",
+	lists: "++id, name, listIDs, parentID, parentType, folded",
 })
 
 export async function getLists(parentID, parentType) {

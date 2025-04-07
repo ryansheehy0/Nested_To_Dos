@@ -4,12 +4,13 @@ import { db } from './db'
 import { useEffect, useState } from 'react'
 
 /* To Do
-- Add lists to lists
+- Delete lists sometimes crashes
 - Save icon
 - Open icon
-- Folding
 - Moving
+  - How to handle moving when there's folded lists.
 - PWA
+- Width of next list not the same.
 
 - Fix icons
   - Icon sizes the same for lists and boards
@@ -44,7 +45,7 @@ function App() {
   if (loading) return null
 
   return (
-    <div className='w-screen h-screen flex flex-row'>
+    <div className='w-screen h-screen flex flex-row bg-radial-[at_50%_50%] to-black from-neutral-600'>
       <Navbar/>
       <BoardView/>
     </div>

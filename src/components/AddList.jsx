@@ -8,7 +8,8 @@ export default function AddList() {
 			name: "",
 			listIDs: [],
 			parentID: curBoardID,
-			parentType: "Board"
+			parentType: "Board",
+			folded: false
 		})
 		// Add new list to board's lists
 		const board =  await db.boards.get(curBoardID)
@@ -18,7 +19,7 @@ export default function AddList() {
 	}
 
 	return (
-		<div className="min-w-60 w-min h-11 outline-2 mt-0.5 outline-white flex flex-row items-center justify-center cursor-pointer text-white"
+		<div className="min-w-60 w-min bg-black h-11 outline-2 mt-0.5 outline-white flex flex-row items-center justify-center cursor-pointer text-white"
 			onClick={addList}
 		>
 				Add list

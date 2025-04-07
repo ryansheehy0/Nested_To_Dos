@@ -10,7 +10,7 @@ export default function BoardView() {
 	})
 
 	return (
-		<div className="w-full h-screen bg-black px-6.25 py-5.75 flex flex-row gap-5.75">
+		<div className="w-full min-w-fit h-screen px-2.5 py-2.5 flex flex-row gap-2.5">
 			{lists ? lists.map((list) => (
 				<List key={list.id} id={list.id} name={list.name} parentID={null} parentType={"Board"}/>
 			)) : null}
