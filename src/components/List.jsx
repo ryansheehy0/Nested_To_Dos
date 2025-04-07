@@ -47,9 +47,9 @@ export default function List({id, name, parentID, parentType}) {
 		if (!deleted) return setDeleted(true)
 		if (parentType === "Board") {
 			const { curBoardID } = await db.other.get(1)
-    	recursivelyDeleteList(id, curBoardID, parentType)
+    	await recursivelyDeleteList(id, curBoardID, parentType)
 		} else if (parentType === "List") {
-    	recursivelyDeleteList(id, parentID, parentType)
+    	await recursivelyDeleteList(id, parentID, parentType)
 		}
 	}
 
@@ -76,8 +76,16 @@ export default function List({id, name, parentID, parentType}) {
 		})
 	}
 
-	return (
+	/*
 		<div className='min-w-60 w-min h-fit flex flex-col'>
+			<div className="w-full bg-black min-h-11 h-min outline-2 mt-0.5 outline-white flex flex-row items-center justify-center text-white p-1 relative">
+				<Move className="cursor-pointer w-8 h-8 fill-white"/>
+				<textarea className="bg-transparent m-0 boarder-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"
+					value={text} onInput={onTextareaInput} rows={1} autoFocus={text === ""}
+				></textarea>
+	*/
+	return (
+		<div className={`min-w-60 h-fit flex flex-col ${parentType === "Board" ? "w-min" : "w-full"}`}>
 			<div className="w-full bg-black min-h-11 h-min outline-2 mt-0.5 outline-white flex flex-row items-center justify-center text-white p-1 relative">
 				<Move className="cursor-pointer w-8 h-8 fill-white"/>
 				<textarea className="bg-transparent m-0 boarder-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"

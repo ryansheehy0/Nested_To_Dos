@@ -10,12 +10,12 @@ import { useEffect, useState } from 'react'
 - Moving
   - How to handle moving when there's folded lists.
 - PWA
-- Width of next list not the same.
 
-- Fix icons
-  - Icon sizes the same for lists and boards
-  - Thinner icon lines
-- Fix width and sizing of everything
+- Visuals
+  - Fix icons
+    - Icon sizes the same for lists and boards
+    - Thinner icon lines
+  - Fix width and sizing of everything
 
 - Review code and clean everything
 - Fix readme
