@@ -8,9 +8,9 @@ export default function BoardView() {
 		const { curBoardID } = await db.other.get(1)
 		return await getLists(curBoardID, "Board")
 	})
-
+// w-full
 	return (
-		<div className="w-full min-w-fit h-screen px-2.5 py-2.5 flex flex-row gap-2.5">
+		<div className="w-full min-w-fit h-screen p-5 flex flex-row gap-5">
 			{lists ? lists.map((list) => (
 				<List key={list.id} id={list.id} name={list.name} parentID={null} parentType={"Board"}/>
 			)) : null}
