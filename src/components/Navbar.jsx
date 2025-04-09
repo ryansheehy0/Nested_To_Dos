@@ -22,7 +22,7 @@ export default function Navbar() {
 					<Folder ref={folderRef} className="fill-white cursor-pointer w-6.5 h-6" onClick={() => {folderRef.current.click()}}/>
           <input type="file" ref={folderRef} className="hidden" accept=".json" onChange={(event) => upload(event)}/>
 					<a target="_blank" href="https://github.com/ryansheehy0/New_Nested_To_Dos">
-						<Github className="fill-white cursor-pointer w-5.25 h-5.25"/>
+						<Github className="fill-white cursor-pointer w-5.5 h-5.5"/>
 					</a>
 				</>) : ""}
 			</div>

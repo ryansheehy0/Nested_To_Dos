@@ -6,9 +6,10 @@ import { useState, useEffect, useRef } from 'react'
 import { db, recursivelyDeleteList, getLists } from "../db"
 import { useLiveQuery } from 'dexie-react-hooks'
 
-export default function List({id, name, parentID, parentType}) {
+export default function List({id, name, parentID, parentType, movingListID, setMovingListID}) {
 	const [deleted, setDeleted] = useState(false)
 	const [text, setText] = useState(name)
+	const [moving, setMoving] = useState(false)
 	const trashRef = useRef(null)
 	const lists = useLiveQuery(async () => {
 		return await getLists(id, "List")
@@ -77,10 +78,15 @@ export default function List({id, name, parentID, parentType}) {
 		})
 	}
 
+	async function toggleMove() {
+		setMovingListID(moving ? false : id) // If moving, then toggle to not moving. If not moving, then toggle to moving.
+		setMoving(!moving)
+	}
+
 	return (
-		<div className={`min-w-60 h-fit flex flex-col ${parentType === "Board" ? "w-min" : "w-full"}`}>
+		<div className={`min-w-60 h-fit flex flex-col ${parentType === "Board" ? "w-min mt-5" : "w-full"} ${parentID === movingListID ? "invisible" : ""}`} draggable={true} onMouseOver={console.log(`Mouse entered ${text}`)}>
 			<div className="w-full bg-black min-h-11 h-min outline-2 mt-0.5 outline-white flex flex-row items-center justify-center text-white p-1 relative">
-				<Move className="cursor-pointer w-8 h-8 fill-white"/>
+				<Move className={`cursor-pointer w-8 h-8 ${moving ? "fill-red-500" : "fill-white"}`} onClick={toggleMove}/>
 				<textarea className="bg-transparent m-0 boarder-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"
 					value={text} onInput={onTextareaInput} rows={1} autoFocus={text === ""}
 				></textarea>
@@ -89,11 +95,13 @@ export default function List({id, name, parentID, parentType}) {
 				: null}
 				<Add className="cursor-pointer w-8 h-8 fill-white" onClick={addList}/>
 				<Trash ref={trashRef} className={`cursor-pointer w-8 h-8 ${deleted ? "fill-red-600" : "fill-white"}`} onClick={deleteSelf}/>
+				<div className={`${moving || !movingListID ? "hidden" : ""} w-full h-1/2 absolute top-0 text-center ${parentID === movingListID ? "bg-transparent" : "bg-blue-500/50 hover:bg-blue-500 text-white/30 hover:text-white"}`}>Move Inside</div>
+				<div className={`${moving || !movingListID ? "hidden" : ""} w-full h-1/2 absolute bottom-0 ${parentType === "Board" || parentID === movingListID ? "bg-transparent" : "bg-red-500/50 hover:bg-red-500"}`}></div>
 			</div>
 			{lists?.length ?
 				<div className={`h-min w-fit outline-2 bg-neutral-600 outline-white pl-6.5 ${folded ? "invisible max-h-0 py-0 px-2.5" : "p-2.5 mt-0.5"}`}>
 					{lists.map((list) => (
-						<List key={list.id} id={list.id} name={list.name} parentID={id} parentType={"List"}/>
+						<List key={list.id} id={list.id} name={list.name} parentID={id} parentType={"List"} movingListID={movingListID} setMovingListID={setMovingListID}/>
 					))}
 				</div>
 			: null}

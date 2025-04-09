@@ -5,19 +5,28 @@ import { useEffect, useState } from 'react'
 
 /* To Do
 - Moving
-  - How to handle moving when there's folded lists.
-- PWA
+  - Move verticle moving divs inside list
+    - Border top the same as the margin. That might not work.
+  - Verticle text
+  - 
+
+  - Handle visuals for clicking move and un-clicking it
+    - Prevent moving into child lists
+  - Make onClick functions
 
 - Visuals
   - Fix icons
     - Icon sizes the same for lists and boards
     - Thinner icon lines
-  - Fix width and sizing of everything
+    - Clean up assets folder
   - New lists cause the vertical scrollbar to show up for some reason
   - Background radius gradient chaining as you add new lists
 
 - Review code and clean everything
 - Fix readme
+  - List all the features and screen shots on how to use them.
+- Buy and upload to nestedtodos.com
+- Test PWA in distribution
 */
 
 function App() {
