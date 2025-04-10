@@ -3,7 +3,7 @@ import Trash from '../assets/trash.svg?react'
 import Arrow from '../assets/arrow.svg?react'
 import Move from '../assets/move.svg?react'
 import { useState, useEffect, useRef } from 'react'
-import { db, recursivelyDeleteList, getLists } from "../db"
+import { db, recursivelyDeleteList, getLists, removeMovingListIDFromItsParent } from "../db"
 import { useLiveQuery } from 'dexie-react-hooks'
 
 export default function List({id, name, parentID, parentType, movingListID, setMovingListID}) {
@@ -82,33 +82,9 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 		setMovingListID(movingListID ? false : id)
 	}
 
-	async function removeMovingListIDFromItsParent() {
-		const movingList = await db.lists.get(movingListID)
-		if (movingList.parentType === "Board") {
-			const parentBoard = await db.boards.get(movingList.parentID)
-			parentBoard.listIDs = parentBoard.listIDs.filter((listID) => listID !== movingListID)
-			await db.boards.update(movingList.parentID, {
-				listIDs: parentBoard.listIDs
-			})
-		} else if (movingList.parentType === "List") {
-			const parentList = await db.lists.get(movingList.parentID)
-			parentList.listIDs = parentList.listIDs.filter((listID) => listID !== movingListID)
-			await db.lists.update(movingList.parentID, {
-				listIDs: parentList.listIDs
-			})
-		}
-	}
-
-	async function updateMovingListsParentIDandParentType(curBoardID) {
-		await db.lists.update(movingListID, {
-			parentID: curBoardID,
-			parentType: "Board"
-		})
-	}
-
 	async function moveHere() {
 		// Remove moving list's ID from its parent
-		removeMovingListIDFromItsParent()
+		await removeMovingListIDFromItsParent(movingListID)
 		// Find the index of this list(the list right of the Move Here)
 		const { curBoardID } = await db.other.get(1)
 		const board = await db.boards.get(curBoardID) // There parent of this list is always a board.
@@ -119,20 +95,50 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 			listIDs: board.listIDs
 		})
 		// Change the moving list's parentID and parentType
+		await db.lists.update(movingListID, {
+			parentID: curBoardID,
+			parentType: "Board"
+		})
 		// Reset moving
 		setMovingListID(false)
 	}
 
 	async function moveInside() {
 		// Remove moving list's ID from its parent
-		removeMovingListIDFromItsParent()
+		await removeMovingListIDFromItsParent(movingListID)
 		// Put the moving list's ID at the start of this list's ID(the list that was clicked)
+		const thisList = await db.lists.get(id)
+		thisList.listIDs.splice(0, 0, movingListID)
+		await db.lists.update(id, {
+			listIDs: thisList.listIDs
+		})
 		// Change the moving list's parentID and parentType
+		await db.lists.update(movingListID, {
+			parentID: id,
+			parentType: "List"
+		})
 		// Reset moving
 		setMovingListID(false)
 	}
 
 	async function moveBelow() {
+		// Remove moving list's ID from its parent
+		await removeMovingListIDFromItsParent(movingListID)
+		// Find the index of this list's ID in its parent list
+		const parentList = await db.lists.get(parentID)
+		const indexOfThisList = parentList.listIDs.findIndex((listID) => listID === id)
+		// Put the moving list's ID after the index of this list's ID
+		parentList.listIDs.splice(indexOfThisList + 1, 0, movingListID)
+		await db.lists.update(parentID, {
+			listIDs: parentList.listIDs
+		})
+		// Change the moving list's parentID and parentType
+		await db.lists.update(movingListID, {
+			parentID: parentID,
+			parentType: parentType
+		})
+		// Reset moving
+		setMovingListID(false)
 	}
 
 	return (
@@ -149,8 +155,8 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 				: null}
 				<Add className={`cursor-pointer w-8 h-8 fill-white ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={addList}/>
 				<Trash ref={trashRef} className={`w-8 h-8 ${deleted ? "fill-red-600" : "fill-white"} ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={deleteSelf}/>
-				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute top-0 text-center select-none ${parentID === movingListID ? "bg-transparent" : "bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white"}`}>Move Inside</div>
-				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute bottom-0 text-center select-none ${parentType === "Board" || parentID === movingListID ? "bg-transparent text-transparent" : "bg-red-500/50 hover:bg-red-500 text-transparent hover:text-white"}`}>Move Below</div>
+				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute top-0 text-center select-none bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white`} onClick={moveInside}>Move Inside</div>
+				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute bottom-0 text-center select-none ${parentType === "Board" || parentID === movingListID ? "bg-transparent text-transparent" : "bg-red-500/50 hover:bg-red-500 text-transparent hover:text-white"}`} onClick={moveBelow}>Move Below</div>
 			</div>
 			{lists?.length ?
 				<div className={`h-min w-fit outline-2 bg-neutral-600 outline-white pl-6.5 ${folded ? "invisible max-h-0 py-0 px-2.5" : "p-2.5 mt-0.5"}`}>

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 /* To Do
 - Moving
-  - Make onClick functions
+  - Remove click events for things that are transparent
 
 - Visuals
   - Fix icons

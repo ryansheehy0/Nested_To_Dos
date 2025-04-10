@@ -106,3 +106,20 @@ export async function upload(event) {
     event.target.value = ""
 	}
 }
+
+export async function removeMovingListIDFromItsParent(movingListID) {
+	const movingList = await db.lists.get(movingListID)
+	if (movingList.parentType === "Board") {
+		const parentBoard = await db.boards.get(movingList.parentID)
+		parentBoard.listIDs = parentBoard.listIDs.filter((listID) => listID !== movingListID)
+		await db.boards.update(movingList.parentID, {
+			listIDs: parentBoard.listIDs
+		})
+	} else if (movingList.parentType === "List") {
+		const parentList = await db.lists.get(movingList.parentID)
+		parentList.listIDs = parentList.listIDs.filter((listID) => listID !== movingListID)
+		await db.lists.update(movingList.parentID, {
+			listIDs: parentList.listIDs
+		})
+	}
+}
