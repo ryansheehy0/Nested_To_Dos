@@ -5,13 +5,6 @@ import { useEffect, useState } from 'react'
 
 /* To Do
 - Moving
-  - Move verticle moving divs inside list
-    - Border top the same as the margin. That might not work.
-  - Verticle text
-  - 
-
-  - Handle visuals for clicking move and un-clicking it
-    - Prevent moving into child lists
   - Make onClick functions
 
 - Visuals
@@ -22,7 +15,7 @@ import { useEffect, useState } from 'react'
   - New lists cause the vertical scrollbar to show up for some reason
   - Background radius gradient chaining as you add new lists
 
-- Review code and clean everything
+- Review code, clean everything, and add comments
 - Fix readme
   - List all the features and screen shots on how to use them.
 - Buy and upload to nestedtodos.com
