@@ -1,7 +1,7 @@
 import AddList from "./AddList"
 import List from "./List"
 import { useLiveQuery } from "dexie-react-hooks"
-import { db, getLists, removeMovingListIDFromItsParent } from "../db"
+import { db, getLists, removeListIDFromItsParent } from "../db"
 import { useState } from "react"
 
 export default function BoardView() {
@@ -14,7 +14,7 @@ export default function BoardView() {
 
 	async function moveHere() {
 		// Remove moving list's ID from its parent
-		await removeMovingListIDFromItsParent(movingListID)
+		await removeListIDFromItsParent(movingListID)
 		// Put the moving list's ID at the end of the current board's listIDs
 		const { curBoardID } = await db.other.get(1)
 		const board = await db.boards.get(curBoardID)

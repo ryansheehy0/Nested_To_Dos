@@ -57,7 +57,7 @@ export default function Board({id, name}) {
 			<textarea className="bg-transparent m-0 boarder-none text-white resize-none px-1 w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"
 				value={text} onInput={onTextareaInput} rows={1} autoFocus={text === ""}
 			></textarea>
-			<Trash ref={trashRef} className={`cursor-pointer w-8 h-8 ${deleted ? "fill-red-600" : "fill-white"} ${selected ? "hidden" : ""}`} onClick={deleteSelf}/>
+			<Trash ref={trashRef} className={`cursor-pointer w-6 h-6 ${deleted ? "fill-red-600" : "fill-white"} ${selected ? "hidden" : ""}`} onClick={deleteSelf}/>
 		</div>
 	)
 }

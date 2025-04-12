@@ -1,6 +1,6 @@
-import Menu from "../assets/menu2.svg?react"
-import Save from "../assets/save2.svg?react"
-import Folder from "../assets/folder2.svg?react"
+import Menu from "../assets/menu.svg?react"
+import Save from "../assets/save.svg?react"
+import Folder from "../assets/folder.svg?react"
 import Github from "../assets/github.svg?react"
 import { useState, useRef } from "react"
 import Board from './Board'
@@ -15,11 +15,11 @@ export default function Navbar() {
 
 	return (
 		<div className={`${open ? "min-w-60" : "min-w-11"} h-full bg-black w-min border-2 border-white`}>
-			<div className="w-full h-11 p-1.5 flex flex-row outline-2 outline-white gap-2 items-center">
+			<div className="w-full h-11 p-1.5 flex flex-row outline-2 outline-white gap-1.5 items-center">
 				<Menu className="fill-white cursor-pointer w-7 h-7" onClick={() => setOpen(!open)}/>
 				{open ? (<>
 					<Save className="fill-white cursor-pointer w-5 h-5" onClick={download}/>
-					<Folder ref={folderRef} className="fill-white cursor-pointer w-6.5 h-6" onClick={() => {folderRef.current.click()}}/>
+					<Folder ref={folderRef} className="fill-white cursor-pointer w-7 h-7" onClick={() => {folderRef.current.click()}}/>
           <input type="file" ref={folderRef} className="hidden" accept=".json" onChange={(event) => upload(event)}/>
 					<a target="_blank" href="https://github.com/ryansheehy0/New_Nested_To_Dos">
 						<Github className="fill-white cursor-pointer w-5.5 h-5.5"/>

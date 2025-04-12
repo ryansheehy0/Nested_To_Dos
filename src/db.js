@@ -29,26 +29,14 @@ export async function getLists(parentID, parentType) {
 	return lists
 }
 
-export async function recursivelyDeleteList(id, parentID, parentType) {
+export async function recursivelyDeleteList(id) {
 	// Delete all lists in list
 	const list = await db.lists.get(id)
 	for (const listID of list.listIDs) {
-		await recursivelyDeleteList(listID, id, "List")
+		await recursivelyDeleteList(listID)
 	}
 	// Remove reference of self in parent
-	if (parentType === "Board") {
-		const parentBoard = await db.boards.get(parentID)
-		parentBoard.listIDs = parentBoard.listIDs.filter((listID) => {return listID !== id})
-		await db.boards.update(parentID, {
-			listIDs: [...parentBoard.listIDs]
-		})
-	} else if (parentType === "List") {
-		const parentList = await db.lists.get(parentID)
-		parentList.listIDs = parentList.listIDs.filter((listID) => {return listID !== id})
-		await db.lists.update(parentID, {
-			listIDs: [...parentList.listIDs]
-		})
-	}
+	await removeListIDFromItsParent(id)
 	// Delete self
 	await db.lists.delete(id)
 }
@@ -57,7 +45,7 @@ export async function recursivelyDeleteBoard(id) {
 	// Delete all lists in board
 	const board = await db.boards.get(id)
 	for (const listID of board.listIDs) {
-		await recursivelyDeleteList(listID, id, "Board")
+		await recursivelyDeleteList(listID)
 	}
 	// Delete self
 	await db.boards.delete(id)
@@ -107,18 +95,18 @@ export async function upload(event) {
 	}
 }
 
-export async function removeMovingListIDFromItsParent(movingListID) {
-	const movingList = await db.lists.get(movingListID)
-	if (movingList.parentType === "Board") {
-		const parentBoard = await db.boards.get(movingList.parentID)
-		parentBoard.listIDs = parentBoard.listIDs.filter((listID) => listID !== movingListID)
-		await db.boards.update(movingList.parentID, {
+export async function removeListIDFromItsParent(id) {
+	const list = await db.lists.get(id)
+	if (list.parentType === "Board") {
+		const parentBoard = await db.boards.get(list.parentID)
+		parentBoard.listIDs = parentBoard.listIDs.filter((listID) => listID !== id)
+		await db.boards.update(list.parentID, {
 			listIDs: parentBoard.listIDs
 		})
-	} else if (movingList.parentType === "List") {
-		const parentList = await db.lists.get(movingList.parentID)
-		parentList.listIDs = parentList.listIDs.filter((listID) => listID !== movingListID)
-		await db.lists.update(movingList.parentID, {
+	} else if (list.parentType === "List") {
+		const parentList = await db.lists.get(list.parentID)
+		parentList.listIDs = parentList.listIDs.filter((listID) => listID !== id)
+		await db.lists.update(list.parentID, {
 			listIDs: parentList.listIDs
 		})
 	}

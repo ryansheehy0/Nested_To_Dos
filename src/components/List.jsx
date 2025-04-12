@@ -1,9 +1,9 @@
 import Add from '../assets/add.svg?react'
 import Trash from '../assets/trash.svg?react'
 import Arrow from '../assets/arrow.svg?react'
-import Move from '../assets/move.svg?react'
+import Drag from '../assets/drag.svg?react'
 import { useState, useEffect, useRef } from 'react'
-import { db, recursivelyDeleteList, getLists, removeMovingListIDFromItsParent } from "../db"
+import { db, recursivelyDeleteList, getLists, removeListIDFromItsParent } from "../db"
 import { useLiveQuery } from 'dexie-react-hooks'
 
 export default function List({id, name, parentID, parentType, movingListID, setMovingListID}) {
@@ -46,12 +46,7 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 
 	async function deleteSelf() {
 		if (!deleted) return setDeleted(true)
-		if (parentType === "Board") {
-			const { curBoardID } = await db.other.get(1)
-    	await recursivelyDeleteList(id, curBoardID, parentType)
-		} else if (parentType === "List") {
-    	await recursivelyDeleteList(id, parentID, parentType)
-		}
+		await recursivelyDeleteList(id)
 	}
 
 	async function addList() {
@@ -84,7 +79,7 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 
 	async function moveHere() {
 		// Remove moving list's ID from its parent
-		await removeMovingListIDFromItsParent(movingListID)
+		await removeListIDFromItsParent(movingListID)
 		// Find the index of this list(the list right of the Move Here)
 		const { curBoardID } = await db.other.get(1)
 		const board = await db.boards.get(curBoardID) // There parent of this list is always a board.
@@ -105,7 +100,7 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 
 	async function moveInside() {
 		// Remove moving list's ID from its parent
-		await removeMovingListIDFromItsParent(movingListID)
+		await removeListIDFromItsParent(movingListID)
 		// Put the moving list's ID at the start of this list's ID(the list that was clicked)
 		const thisList = await db.lists.get(id)
 		thisList.listIDs.splice(0, 0, movingListID)
@@ -123,7 +118,7 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 
 	async function moveBelow() {
 		// Remove moving list's ID from its parent
-		await removeMovingListIDFromItsParent(movingListID)
+		await removeListIDFromItsParent(movingListID)
 		// Find the index of this list's ID in its parent list
 		const parentList = await db.lists.get(parentID)
 		const indexOfThisList = parentList.listIDs.findIndex((listID) => listID === id)
@@ -146,17 +141,17 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 		<div className={`w-5 h-full pt-5 flex items-center select-none ${movingListID ? "bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white" : "invisible"} ${parentType === "Board" ? "" : "hidden"}`} style={{writingMode: "vertical-rl", textOrientation: "upright"}} onClick={moveHere}>Move Here</div>
 		<div className={`min-w-60 h-fit flex flex-col ${parentType === "Board" ? "w-min mt-5" : "w-full"} ${parentID === movingListID ? "invisible" : ""}`}>
 			<div className="w-full bg-black min-h-11 h-min outline-2 mt-0.5 outline-white flex flex-row items-center justify-center text-white p-1 relative">
-				<Move className={`cursor-pointer w-8 h-8 ${id === movingListID ? "fill-red-500" : "fill-white"}`} onClick={toggleMove}/>
+				<Drag className={`cursor-pointer w-7 h-7 mr-1 ${id === movingListID ? "fill-red-500" : "fill-white"}`} onClick={toggleMove}/>
 				<textarea className="bg-transparent m-0 boarder-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"
 					value={text} onInput={onTextareaInput} rows={1} autoFocus={text === ""}
 				></textarea>
 				{lists?.length ?
-					<Arrow className={`cursor-pointer w-6 h-6 fill-white ${folded ? "" : "rotate-90"} ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={toggleFold}/>
+					<Arrow className={`cursor-pointer w-6.5 h-6.5 mr-1 fill-white ${folded ? "" : "rotate-90"} ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={toggleFold}/>
 				: null}
-				<Add className={`cursor-pointer w-8 h-8 fill-white ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={addList}/>
-				<Trash ref={trashRef} className={`w-8 h-8 ${deleted ? "fill-red-600" : "fill-white"} ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={deleteSelf}/>
+				<Add className={`cursor-pointer w-6.5 h-6.5 mr-1 fill-white ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={addList}/>
+				<Trash ref={trashRef} className={`w-7 h-7 ${deleted ? "fill-red-600" : "fill-white"} ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={deleteSelf}/>
 				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute top-0 text-center select-none bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white`} onClick={moveInside}>Move Inside</div>
-				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute bottom-0 text-center select-none ${parentType === "Board" || parentID === movingListID ? "bg-transparent text-transparent" : "bg-red-500/50 hover:bg-red-500 text-transparent hover:text-white"}`} onClick={moveBelow}>Move Below</div>
+				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute bottom-0 text-center select-none ${parentType === "Board" || parentID === movingListID ? "bg-transparent text-transparent pointer-events-none" : "bg-red-500/50 hover:bg-red-500 text-transparent hover:text-white"}`} onClick={moveBelow}>Move Below</div>
 			</div>
 			{lists?.length ?
 				<div className={`h-min w-fit outline-2 bg-neutral-600 outline-white pl-6.5 ${folded ? "invisible max-h-0 py-0 px-2.5" : "p-2.5 mt-0.5"}`}>
