@@ -9,7 +9,9 @@ import { useLiveQuery } from 'dexie-react-hooks'
 export default function List({id, name, parentID, parentType, movingListID, setMovingListID}) {
 	const [deleted, setDeleted] = useState(false)
 	const [text, setText] = useState(name)
+	const [spellChecking, setSpellChecking] = useState(false)
 	const trashRef = useRef(null)
+	const textareaRef = useRef(null)
 	const lists = useLiveQuery(async () => {
 		return await getLists(id, "List")
 	})
@@ -29,6 +31,13 @@ export default function List({id, name, parentID, parentType, movingListID, setM
     return(() => {
       document.removeEventListener("click", handleClickOutside)
     })
+  }, [])
+
+  // Size the textarea on load
+  useEffect(() => {
+    const textarea = textareaRef.current
+    textarea.style.height = "fit-content"
+    textarea.style.height = textarea.scrollHeight + "px"
   }, [])
 
 	async function onTextareaInput(event) {
@@ -139,11 +148,12 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 	return (
 		<>
 		<div className={`w-5 h-full pt-5 flex items-center select-none ${movingListID ? "bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white" : "invisible"} ${parentType === "Board" ? "" : "hidden"}`} style={{writingMode: "vertical-rl", textOrientation: "upright"}} onClick={moveHere}>Move Here</div>
-		<div className={`min-w-60 h-fit flex flex-col ${parentType === "Board" ? "w-min mt-5" : "w-full"} ${parentID === movingListID ? "invisible" : ""}`}>
+		<div className={`min-w-64 h-fit flex flex-col ${parentType === "Board" ? "w-min mt-5" : "w-full"} ${parentID === movingListID ? "invisible" : ""}`}>
 			<div className="w-full bg-black min-h-11 h-min outline-2 mt-0.5 outline-white flex flex-row items-center justify-center text-white p-1 relative">
 				<Drag className={`cursor-pointer w-7 h-7 mr-1 ${id === movingListID ? "fill-red-500" : "fill-white"}`} onClick={toggleMove}/>
-				<textarea className="bg-transparent m-0 boarder-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"
+				<textarea ref={textareaRef} className="bg-transparent m-0 border-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"
 					value={text} onInput={onTextareaInput} rows={1} autoFocus={text === ""}
+					onFocus={() => {setSpellChecking(true)}} onBlur={() => {setSpellChecking(false)}} spellCheck={spellChecking}
 				></textarea>
 				{lists?.length ?
 					<Arrow className={`cursor-pointer w-6.5 h-6.5 mr-1 fill-white ${folded ? "" : "rotate-90"} ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={toggleFold}/>
