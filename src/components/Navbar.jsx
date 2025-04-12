@@ -21,7 +21,7 @@ export default function Navbar() {
 					<Save className="fill-white cursor-pointer w-5 h-5" onClick={download}/>
 					<Folder ref={folderRef} className="fill-white cursor-pointer w-7 h-7" onClick={() => {folderRef.current.click()}}/>
           <input type="file" ref={folderRef} className="hidden" accept=".json" onChange={(event) => upload(event)}/>
-					<a target="_blank" href="https://github.com/ryansheehy0/New_Nested_To_Dos">
+					<a target="_blank" href="https://github.com/ryansheehy0/Nested_To_Dos">
 						<Github className="fill-white cursor-pointer w-5.5 h-5.5"/>
 					</a>
 				</>) : ""}
