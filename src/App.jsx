@@ -27,7 +27,7 @@ function App() {
   if (loading) return null
 
   return (
-    <div className='w-fit min-w-screen h-screen flex flex-row bg-radial-[at_50vw_50vh] to-black from-neutral-600'>
+    <div className='w-fit min-w-screen h-fit min-h-screen flex flex-row bg-radial-[at_50vw_50vh] to-black from-neutral-600'>
       <Navbar/>
       <BoardView/>
     </div>

@@ -32,7 +32,7 @@ export default function BoardView() {
 	}
 
 	return (
-		<div className="w-full min-w-fit h-screen flex flex-row gap-0.5 pr-5">
+		<div className="w-full min-w-fit h-full min-h-screen flex flex-row gap-0.5 pr-5">
 			{lists ? lists.map((list) => (
 				<List key={list.id} id={list.id} name={list.name} parentID={null} parentType={"Board"} movingListID={movingListID} setMovingListID={setMovingListID}/>
 			)) : null}

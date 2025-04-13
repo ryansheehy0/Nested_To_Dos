@@ -29,8 +29,10 @@ export default function Board({id, name}) {
   // Size the textarea on load
   useEffect(() => {
     const textarea = textareaRef.current
-    textarea.style.height = "fit-content"
-    textarea.style.height = textarea.scrollHeight + "px"
+		setTimeout(() => { // Wait for browser
+      textarea.style.height = "fit-content"
+      textarea.style.height = textarea.scrollHeight + "px"
+    }, 100)
   }, [])
 
 	async function onTextareaInput(event) {
