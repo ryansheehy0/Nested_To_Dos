@@ -14,7 +14,7 @@ export default function Navbar() {
 	const folderRef = useRef(null)
 
 	return (
-		<div className={`${open ? "min-w-60" : "min-w-11"} h-full min-h-screen bg-black w-min border-2 border-white`}>
+		<div className={`${open ? "min-w-60" : "min-w-11"} h-auto min-h-screen bg-black w-min border-2 border-white`}>
 			<div className="w-full h-11 p-1.5 flex flex-row outline-2 outline-white gap-1.5 items-center">
 				<Menu className="fill-white cursor-pointer w-7 h-7" onClick={() => setOpen(!open)}/>
 				{open ? (<>
