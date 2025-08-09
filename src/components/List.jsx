@@ -34,13 +34,13 @@ export default function List({id, name, parentID, parentType, movingListID, setM
   }, [])
 
   // Size the textarea on load
-  useEffect(() => {
+	useEffect(() => {
 		const textarea = textareaRef.current
-		setTimeout(() => { // Wait for browser
+		requestAnimationFrame(() => {
 			textarea.style.height = "fit-content"
 			textarea.style.height = textarea.scrollHeight + "px"
-		}, 100)
-  }, [])
+		})
+	}, [])
 
 	async function onTextareaInput(event) {
     const textarea = event.target
@@ -149,7 +149,7 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 
 	return (
 		<>
-		<div className={`w-5 h-full pt-5 flex items-center select-none ${movingListID ? "bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white" : "invisible"} ${parentType === "Board" ? "" : "hidden"}`} style={{writingMode: "vertical-rl", textOrientation: "upright"}} onClick={moveHere}>Move Here</div>
+		<div className={`w-5 h-auto pt-5 flex items-center select-none ${movingListID ? "bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white" : "invisible"} ${parentType === "Board" ? "" : "hidden"}`} style={{writingMode: "vertical-rl", textOrientation: "upright"}} onClick={moveHere}>Move Here</div>
 		<div className={`min-w-64 h-fit flex flex-col ${parentType === "Board" ? "w-min mt-5" : "w-full"} ${parentID === movingListID ? "invisible" : ""}`}>
 			<div className="w-full bg-black min-h-11 h-min outline-2 mt-0.5 outline-white flex flex-row items-center justify-center text-white p-1 relative">
 				<Drag className={`cursor-pointer w-7 h-7 mr-1 ${id === movingListID ? "fill-red-500" : "fill-white"}`} onClick={toggleMove}/>
@@ -166,7 +166,7 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute bottom-0 text-center select-none ${parentType === "Board" || parentID === movingListID ? "bg-transparent text-transparent pointer-events-none" : "bg-red-500/50 hover:bg-red-500 text-transparent hover:text-white"}`} onClick={moveBelow}>Move Below</div>
 			</div>
 			{lists?.length ?
-				<div className={`h-min w-fit outline-2 bg-neutral-600 outline-white pl-6.5 ${folded ? "invisible overflow-hidden max-h-0 py-0 px-2.5" : "p-2.5 mt-0.5"}`}>
+				<div className={`h-min w-auto outline-2 bg-neutral-600 outline-white pl-6.5 ${folded ? "invisible overflow-hidden max-h-0 py-0 px-2.5" : "p-2.5 mt-0.5"}`}>
 					{lists.map((list) => (
 						<List key={list.id} id={list.id} name={list.name} parentID={id} parentType={"List"} movingListID={movingListID} setMovingListID={setMovingListID}/>
 					))}
