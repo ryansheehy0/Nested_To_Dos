@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from 'react'
 import { db, recursivelyDeleteList, getLists, removeListIDFromItsParent } from "../db"
 import { useLiveQuery } from 'dexie-react-hooks'
 
-export default function List({id, name, parentID, parentType, movingListID, setMovingListID}) {
+export default function List({id, name, parentID, parentType, hasSiblingsAbove, hasSiblingsBelow, movingListID, setMovingListID}) {
 	const [deleted, setDeleted] = useState(false)
 	const [text, setText] = useState(name)
 	const [spellChecking, setSpellChecking] = useState(false)
@@ -74,6 +74,11 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 		await db.lists.update(id, {
 			listIDs: [...list.listIDs, newListID]
 		})
+		await new Promise(r => setTimeout(r, 100))
+    // Resize text area
+    const textarea = textareaRef.current
+		textarea.style.height = "fit-content"
+		textarea.style.height = textarea.scrollHeight + "px"
 	}
 
 	async function toggleFold() {
@@ -149,26 +154,56 @@ export default function List({id, name, parentID, parentType, movingListID, setM
 
 	return (
 		<>
-		<div className={`w-5 h-auto pt-5 flex items-center select-none ${movingListID ? "bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white" : "invisible"} ${parentType === "Board" ? "" : "hidden"}`} style={{writingMode: "vertical-rl", textOrientation: "upright"}} onClick={moveHere}>Move Here</div>
-		<div className={`min-w-64 h-fit flex flex-col ${parentType === "Board" ? "w-min mt-5" : "w-full"} ${parentID === movingListID ? "invisible" : ""}`}>
-			<div className="w-full bg-black min-h-11 h-min outline-2 mt-0.5 outline-white flex flex-row items-center justify-center text-white p-1 relative">
-				<Drag className={`cursor-pointer w-7 h-7 mr-1 ${id === movingListID ? "fill-red-500" : "fill-white"}`} onClick={toggleMove}/>
-				<textarea ref={textareaRef} className="bg-transparent m-0 border-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"
+		<div className={`w-5 h-auto pt-5 flex items-center select-none
+			${movingListID ? "bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white" : "invisible"}
+			${parentType === "Board" ? "" : "hidden"}
+		`} style={{writingMode: "vertical-rl", textOrientation: "upright"}} onClick={moveHere}>Move Here</div>
+		<div className={`min-w-64 h-fit flex flex-col
+			${parentType === "Board" ? "w-min mt-5" : "w-full"}
+			${parentID === movingListID ? "invisible" : ""}
+		`}>
+			<div className={`w-full bg-neutral-800 min-h-11 h-min mt-0.5 flex flex-row items-center justify-center text-white p-1 relative shadow-md
+				${parentType === "Board" ? "rounded-t-lg" : ""}
+				${(parentType !== "Board" && !hasSiblingsAbove) ? "rounded-t-lg" : ""}
+				${(parentType === "Board" && (lists?.length === 0 || folded)) ? "rounded-b-lg" : ""}
+				${(parentType !== "Board" && !hasSiblingsBelow && (lists?.length === 0 || folded)) ? "rounded-b-lg" : ""}
+			`}>
+				<Drag className={`cursor-pointer w-7 h-7 mr-1
+					${id === movingListID ? "fill-red-500" : "fill-white"}
+				`} onClick={toggleMove}/>
+				<textarea ref={textareaRef} className="bg-transparent m-0 border-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-transparent hyphens-auto overflow-hidden"
 					value={text} onInput={onTextareaInput} rows={1} autoFocus={text === ""}
 					onFocus={() => {setSpellChecking(true)}} onBlur={() => {setSpellChecking(false)}} spellCheck={spellChecking}
 				></textarea>
 				{lists?.length ?
-					<Arrow className={`cursor-pointer w-6.5 h-6.5 mr-1 fill-white ${folded ? "" : "rotate-90"} ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={toggleFold}/>
+					<Arrow className={`cursor-pointer w-6.5 h-6.5 mr-1 fill-white
+						${folded ? "" : "rotate-90"}
+						${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}
+					`} onClick={toggleFold}/>
 				: null}
-				<Add className={`cursor-pointer w-6.5 h-6.5 mr-1 fill-white ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={addList}/>
-				<Trash ref={trashRef} className={`w-7 h-7 ${deleted ? "fill-red-600" : "fill-white"} ${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}`} onClick={deleteSelf}/>
-				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute top-0 text-center select-none bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white`} onClick={moveInside}>Move Inside</div>
-				<div className={`${id === movingListID || !movingListID ? "hidden" : ""} w-full h-1/2 absolute bottom-0 text-center select-none ${parentType === "Board" || parentID === movingListID ? "bg-transparent text-transparent pointer-events-none" : "bg-red-500/50 hover:bg-red-500 text-transparent hover:text-white"}`} onClick={moveBelow}>Move Below</div>
+				<Add className={`cursor-pointer w-6.5 h-6.5 mr-1 fill-white
+					${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}
+				`} onClick={addList}/>
+				<Trash ref={trashRef} className={`w-7 h-7
+					${deleted ? "fill-red-600" : "fill-white"}
+					${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}
+				`} onClick={deleteSelf}/>
+				<div className={`w-full h-1/2 absolute top-0 text-center select-none bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white rounded-t-lg
+					${id === movingListID || !movingListID ? "hidden" : ""}
+				`} onClick={moveInside}>Move Inside</div>
+				<div className={` w-full h-1/2 absolute bottom-0 text-center select-none rounded-b-lg
+					${id === movingListID || !movingListID ? "hidden" : ""}
+					${parentType === "Board" || parentID === movingListID ? "bg-transparent text-transparent pointer-events-none" : "bg-red-500/50 hover:bg-red-500 text-transparent hover:text-white"}
+				`} onClick={moveBelow}>Move Below</div>
 			</div>
 			{lists?.length ?
-				<div className={`h-min w-auto outline-2 bg-neutral-600 outline-white pl-6.5 ${folded ? "invisible overflow-hidden max-h-0 py-0 px-2.5" : "p-2.5 mt-0.5"}`}>
-					{lists.map((list) => (
-						<List key={list.id} id={list.id} name={list.name} parentID={id} parentType={"List"} movingListID={movingListID} setMovingListID={setMovingListID}/>
+				<div className={`h-min w-auto bg-neutral-700 shadow-md border-2 border-t-0 border-neutral-800 pl-6.5
+					${folded ? "invisible overflow-hidden max-h-0 py-0 px-2.5" : "p-1.5"}
+					${(parentType === "Board" && (lists?.length !== 0 || !folded)) ? "rounded-b-lg" : ""}
+					${(parentType !== "Board" && !hasSiblingsBelow && (lists?.length !== 0 || !folded)) ? "rounded-b-lg" : ""}
+				`}>
+					{lists.map((list, index) => (
+						<List key={list.id} id={list.id} name={list.name} parentID={id} parentType={"List"} hasSiblingsAbove={index === 0 ? false : true} hasSiblingsBelow={index === lists.length - 1 ? false : true} movingListID={movingListID} setMovingListID={setMovingListID}/>
 					))}
 				</div>
 			: null}

@@ -62,10 +62,10 @@ export default function Board({id, name}) {
   }
 
 	return (
-		<div className="w-full min-h-11 h-fit outline-2 outline-white mt-0.5 flex flex-row items-center justify-center p-1.5"
+		<div className="w-full min-h-11 h-fit bg-neutral-800 mt-0.5 flex flex-row items-center justify-center p-1.5"
       onClick={selectSelf}
     >
-			<textarea ref={textareaRef} className="bg-transparent m-0 boarder-none text-white resize-none px-1 w-full h-auto focus:outline focus:outline-1 focus:outline-black hyphens-auto overflow-hidden"
+			<textarea ref={textareaRef} className="bg-transparent m-0 boarder-none text-white resize-none px-1 w-full h-auto focus:outline focus:outline-1 focus:outline-transparent hyphens-auto overflow-hidden"
 				value={text} onInput={onTextareaInput} rows={1} autoFocus={text === ""}
 				onFocus={() => {setSpellChecking(true)}} onBlur={() => {setSpellChecking(false)}} spellCheck={spellChecking}
 			></textarea>

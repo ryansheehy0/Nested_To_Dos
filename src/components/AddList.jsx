@@ -19,7 +19,7 @@ export default function AddList() {
 	}
 
 	return (
-		<div className="min-w-60 w-min bg-black h-11 outline-2 mt-5.5 outline-white flex flex-row items-center justify-center cursor-pointer text-white"
+		<div className="min-w-60 w-min rounded-lg bg-black h-11 mt-5.5 bg-neutral-800 flex flex-row items-center justify-center cursor-pointer text-white"
 			onClick={addList}
 		>
 				Add list

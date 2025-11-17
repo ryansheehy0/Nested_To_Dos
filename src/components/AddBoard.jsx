@@ -10,7 +10,7 @@ export default function AddBoard() {
 
 	return (
 		<div
-			className="w-full h-11 outline-2 outline-white mt-0.5 flex flex-row items-center justify-center cursor-pointer text-white"
+			className="w-full h-11 mt-0.5 flex flex-row items-center justify-center bg-neutral-800 cursor-pointer text-white"
 			onClick={addBoard}
 		>
 				Add board

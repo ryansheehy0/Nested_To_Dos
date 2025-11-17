@@ -33,8 +33,8 @@ export default function BoardView() {
 
 	return (
 		<div className="w-full min-w-fit h-full min-h-screen flex flex-row gap-0.5 pr-5">
-			{lists ? lists.map((list) => (
-				<List key={list.id} id={list.id} name={list.name} parentID={null} parentType={"Board"} movingListID={movingListID} setMovingListID={setMovingListID}/>
+			{lists ? lists.map((list, index) => (
+				<List key={list.id} id={list.id} name={list.name} parentID={null} parentType={"Board"} hasSiblingsAbove={index === 0 ? false : true} hasSiblingsBelow={index === lists.length - 1 ? false : true} movingListID={movingListID} setMovingListID={setMovingListID}/>
 			)) : null}
 			<div className={`w-5 h-auto pt-5 flex items-center select-none ${movingListID ? "bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white" : "invisible"}`} style={{writingMode: "vertical-rl", textOrientation: "upright"}} onClick={moveHere}>Move Here</div>
 			<AddList/>
