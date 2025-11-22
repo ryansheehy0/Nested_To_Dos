@@ -162,7 +162,7 @@ export default function List({id, name, parentID, parentType, hasSiblingsAbove, 
 			${parentType === "Board" ? "w-min mt-5" : "w-full"}
 			${parentID === movingListID ? "invisible" : ""}
 		`}>
-			<div className={`w-full bg-neutral-800 min-h-11 h-min mt-0.5 flex flex-row items-center justify-center text-white p-1 relative shadow-md
+			<div className={`w-full bg-neutral-800 min-h-11 h-min mt-0.5 flex flex-row items-center justify-center text-white p-1 relative shadow-md overflow-clip
 				${parentType === "Board" ? "rounded-t-lg" : ""}
 				${(parentType !== "Board" && !hasSiblingsAbove) ? "rounded-t-lg" : ""}
 				${(parentType === "Board" && (lists?.length === 0 || folded)) ? "rounded-b-lg" : ""}
@@ -188,10 +188,10 @@ export default function List({id, name, parentID, parentType, hasSiblingsAbove, 
 					${deleted ? "fill-red-600" : "fill-white"}
 					${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}
 				`} onClick={deleteSelf}/>
-				<div className={`w-full h-1/2 absolute top-0 text-center select-none bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white rounded-t-lg
+				<div className={`w-full h-1/2 absolute top-0 text-center select-none bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white
 					${id === movingListID || !movingListID ? "hidden" : ""}
 				`} onClick={moveInside}>Move Inside</div>
-				<div className={` w-full h-1/2 absolute bottom-0 text-center select-none rounded-b-lg
+				<div className={`w-full h-1/2 absolute bottom-0 text-center select-none
 					${id === movingListID || !movingListID ? "hidden" : ""}
 					${parentType === "Board" || parentID === movingListID ? "bg-transparent text-transparent pointer-events-none" : "bg-red-500/50 hover:bg-red-500 text-transparent hover:text-white"}
 				`} onClick={moveBelow}>Move Below</div>
