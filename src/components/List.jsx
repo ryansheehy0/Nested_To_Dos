@@ -2,7 +2,7 @@ import Add from '../assets/add.svg?react'
 import Trash from '../assets/trash.svg?react'
 import Arrow from '../assets/arrow.svg?react'
 import Drag from '../assets/drag.svg?react'
-import { useState, useEffect, useRef, useLayoutEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { db, recursivelyDeleteList, getLists, removeListIDFromItsParent } from "../db"
 import { useLiveQuery } from 'dexie-react-hooks'
 
