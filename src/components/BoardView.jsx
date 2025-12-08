@@ -2,7 +2,7 @@ import AddList from "./AddList"
 import List from "./List"
 import { useLiveQuery } from "dexie-react-hooks"
 import { db, getLists, removeListIDFromItsParent } from "../db"
-import { useState } from "react"
+import { useLayoutEffect, useState } from "react"
 
 export default function BoardView() {
 	const [movingListID, setMovingListID] = useState(false)

@@ -69,7 +69,7 @@ export default function Board({id, name}) {
 				value={text} onInput={onTextareaInput} rows={1} autoFocus={text === ""}
 				onFocus={() => {setSpellChecking(true)}} onBlur={() => {setSpellChecking(false)}} spellCheck={spellChecking}
 			></textarea>
-			<Trash ref={trashRef} className={`cursor-pointer w-6 h-6 ${deleted ? "fill-red-600" : "fill-white"} ${selected ? "hidden" : ""}`} onClick={deleteSelf}/>
+			<Trash ref={trashRef} className={`cursor-pointer w-6 h-6 ${deleted ? "fill-red-600" : "fill-white"} ${selected ? "hidden" : ""}`} onClick={deleteSelf} onMouseDown={e => e.preventDefault()}/>
 		</div>
 	)
 }

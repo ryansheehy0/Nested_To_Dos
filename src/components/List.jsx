@@ -2,7 +2,7 @@ import Add from '../assets/add.svg?react'
 import Trash from '../assets/trash.svg?react'
 import Arrow from '../assets/arrow.svg?react'
 import Drag from '../assets/drag.svg?react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { db, recursivelyDeleteList, getLists, removeListIDFromItsParent } from "../db"
 import { useLiveQuery } from 'dexie-react-hooks'
 
@@ -33,13 +33,14 @@ export default function List({id, name, parentID, parentType, hasSiblingsAbove, 
     })
   }, [])
 
-  // Size the textarea on load
-	useEffect(() => {
+	useEffect(() => { // Size the textarea on load
 		const textarea = textareaRef.current
-		requestAnimationFrame(() => {
+		const observer = new ResizeObserver(() => {
 			textarea.style.height = "fit-content"
-			textarea.style.height = textarea.scrollHeight + "px"
+			textarea.style.height = textarea.scrollHeight + 'px'
 		})
+		observer.observe(textarea)
+		return () => observer.disconnect()
 	}, [])
 
 	async function onTextareaInput(event) {
@@ -162,32 +163,32 @@ export default function List({id, name, parentID, parentType, hasSiblingsAbove, 
 			${parentType === "Board" ? "w-min mt-5" : "w-full"}
 			${parentID === movingListID ? "invisible" : ""}
 		`}>
-			<div className={`w-full bg-neutral-800 min-h-11 h-min mt-0.5 flex flex-row items-center justify-center text-white p-1 relative shadow-md overflow-clip
+			<div className={`w-full bg-neutral-800 min-h-11 h-min mt-0.5 flex flex-row items-center text-white p-1 relative shadow-md overflow-clip
 				${parentType === "Board" ? "rounded-t-lg" : ""}
 				${(parentType !== "Board" && !hasSiblingsAbove) ? "rounded-t-lg" : ""}
 				${(parentType === "Board" && (lists?.length === 0 || folded)) ? "rounded-b-lg" : ""}
 				${(parentType !== "Board" && !hasSiblingsBelow && (lists?.length === 0 || folded)) ? "rounded-b-lg" : ""}
 			`}>
-				<Drag className={`cursor-pointer w-7 h-7 mr-1
+				<Drag className={`cursor-pointer w-5 h-7 mr-1 flex-none
 					${id === movingListID ? "fill-red-500" : "fill-white"}
-				`} onClick={toggleMove}/>
-				<textarea ref={textareaRef} className="bg-transparent m-0 border-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-transparent hyphens-auto overflow-hidden"
+				`} onClick={toggleMove} onMouseDown={e => e.preventDefault()}/>
+				<textarea ref={textareaRef} className="bg-transparent m-0 border-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-transparent hyphens-auto overflow-hidden shrink"
 					value={text} onInput={onTextareaInput} rows={1} autoFocus={text === ""}
 					onFocus={() => {setSpellChecking(true)}} onBlur={() => {setSpellChecking(false)}} spellCheck={spellChecking}
 				></textarea>
 				{lists?.length ?
-					<Arrow className={`cursor-pointer w-6.5 h-6.5 mr-1 fill-white
+					<Arrow className={`cursor-pointer w-4.5 h-6.5 mr-1 fill-white flex-none
 						${folded ? "" : "rotate-90"}
 						${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}
-					`} onClick={toggleFold}/>
+					`} onClick={toggleFold} onMouseDown={e => e.preventDefault()}/>
 				: null}
-				<Add className={`cursor-pointer w-6.5 h-6.5 mr-1 fill-white
+				<Add className={`cursor-pointer w-4.5 h-6.5 mr-1 fill-white flex-none
 					${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}
-				`} onClick={addList}/>
-				<Trash ref={trashRef} className={`w-7 h-7
+				`} onClick={addList} onMouseDown={e => e.preventDefault()}/>
+				<Trash ref={trashRef} className={`w-5 h-7 flex-none
 					${deleted ? "fill-red-600" : "fill-white"}
 					${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}
-				`} onClick={deleteSelf}/>
+				`} onClick={deleteSelf} onMouseDown={e => e.preventDefault()}/>
 				<div className={`w-full h-1/2 absolute top-0 text-center select-none bg-blue-500/50 hover:bg-blue-500 text-transparent hover:text-white
 					${id === movingListID || !movingListID ? "hidden" : ""}
 				`} onClick={moveInside}>Move Inside</div>
@@ -198,7 +199,7 @@ export default function List({id, name, parentID, parentType, hasSiblingsAbove, 
 			</div>
 			{lists?.length ?
 				<div className={`h-min w-auto bg-neutral-700 shadow-md border-2 border-t-0 border-neutral-800 pl-6.5
-					${folded ? "invisible overflow-hidden max-h-0 py-0 px-2.5" : "p-1.5"}
+					${folded ? "invisible overflow-hidden max-h-0 py-0 px-1.5" : "p-1.5"}
 					${(parentType === "Board" && (lists?.length !== 0 || !folded)) ? "rounded-b-lg" : ""}
 					${(parentType !== "Board" && !hasSiblingsBelow && (lists?.length !== 0 || !folded)) ? "rounded-b-lg" : ""}
 				`}>
