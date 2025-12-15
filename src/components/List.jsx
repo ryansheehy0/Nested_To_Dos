@@ -163,13 +163,13 @@ export default function List({id, name, parentID, parentType, hasSiblingsAbove, 
 			${parentType === "Board" ? "w-min mt-5" : "w-full"}
 			${parentID === movingListID ? "invisible" : ""}
 		`}>
-			<div className={`w-full bg-neutral-800 min-h-11 h-min mt-0.5 flex flex-row items-center text-white p-1 relative shadow-md overflow-clip
+			<div className={`w-full bg-neutral-800 min-h-11 h-min mt-0.5 flex flex-row items-center text-white relative shadow-md overflow-clip
 				${parentType === "Board" ? "rounded-t-lg" : ""}
 				${(parentType !== "Board" && !hasSiblingsAbove) ? "rounded-t-lg" : ""}
 				${(parentType === "Board" && (lists?.length === 0 || folded)) ? "rounded-b-lg" : ""}
 				${(parentType !== "Board" && !hasSiblingsBelow && (lists?.length === 0 || folded)) ? "rounded-b-lg" : ""}
 			`}>
-				<Drag className={`cursor-pointer w-5 h-7 mr-1 flex-none
+				<Drag className={`cursor-pointer w-5 h-7 mx-1 flex-none
 					${id === movingListID ? "fill-red-500" : "fill-white"}
 				`} onClick={toggleMove} onMouseDown={e => e.preventDefault()}/>
 				<textarea ref={textareaRef} className="bg-transparent m-0 border-none text-white resize-none w-full h-auto focus:outline focus:outline-1 focus:outline-transparent hyphens-auto overflow-hidden shrink"
@@ -185,7 +185,7 @@ export default function List({id, name, parentID, parentType, hasSiblingsAbove, 
 				<Add className={`cursor-pointer w-4.5 h-6.5 mr-1 fill-white flex-none
 					${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}
 				`} onClick={addList} onMouseDown={e => e.preventDefault()}/>
-				<Trash ref={trashRef} className={`w-5 h-7 flex-none
+				<Trash ref={trashRef} className={`w-5 h-7 flex-none mr-1
 					${deleted ? "fill-red-600" : "fill-white"}
 					${id === movingListID ? "pointer-events-none cursor-default" : "cursor-pointer"}
 				`} onClick={deleteSelf} onMouseDown={e => e.preventDefault()}/>
