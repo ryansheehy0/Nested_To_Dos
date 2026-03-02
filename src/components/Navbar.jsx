@@ -31,7 +31,11 @@ export default function Navbar() {
 					<Board key={board.id} id={board.id} name={board.name}/>
 				))}
 				<AddBoard/>
-			</>) : ""}
+			</>) : 
+				<div className="w-full h-11 flex flex-row items-center justify-center">
+					<Save className="fill-white cursor-pointer w-7 h-7" onClick={download}/>
+				</div>
+			}
 		</div>
 	)
 }
